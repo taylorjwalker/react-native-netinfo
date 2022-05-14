@@ -144,6 +144,7 @@ export default {
   configure,
   fetch,
   refresh,
+  reportConnected,
   addEventListener,
   useNetInfo,
 };
