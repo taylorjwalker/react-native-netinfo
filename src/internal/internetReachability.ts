@@ -164,11 +164,7 @@ export default class InternetReachability {
   };
 
   public update = (state: PrivateTypes.NetInfoNativeModuleState): void => {
-    if (typeof state.isInternetReachable === 'boolean') {
-      this._setIsInternetReachable(state.isInternetReachable);
-    } else {
-      this._setExpectsConnection(state.isConnected);
-    }
+    this._setExpectsConnection(state.isConnected);
   };
 
   public currentState = (): boolean | null | undefined => {
