@@ -14,12 +14,15 @@ import * as Types from './types';
 import * as PrivateTypes from './privateTypes';
 
 export default class State {
+  private _configuration: Types.NetInfoConfiguration;
   private _nativeEventSubscription: NativeEventSubscription | null = null;
   private _subscriptions = new Set<Types.NetInfoChangeHandler>();
   private _latestState: Types.NetInfoState | null = null;
   private _internetReachability: InternetReachability;
 
   constructor(configuration: Types.NetInfoConfiguration) {
+    this._configuration = configuration;
+
     // Add the listener to the internet connectivity events
     this._internetReachability = new InternetReachability(
       configuration,
@@ -84,10 +87,14 @@ export default class State {
   private _convertState = (
     input: PrivateTypes.NetInfoNativeModuleState,
   ): Types.NetInfoState => {
-    return {
-      ...input,
-      isInternetReachable: this._internetReachability.currentState(),
-    } as Types.NetInfoState;
+    if (this._configuration.preferNativeReachability && typeof input.isInternetReachable === 'boolean') {
+      return input as Types.NetInfoState;
+    } else {
+      return {
+        ...input,
+        isInternetReachable: this._internetReachability.currentState(),
+      } as Types.NetInfoState;
+    }
   };
 
   public reportConnected(): void {
